@@ -2,7 +2,7 @@
 /*
 Plugin Name: Пользовательское поле телефона для WooCommerce
 Description: Добавляет пользовательское поле телефона с маской укр номера на страницу оформления заказа WooCommerce.
-Version: 1.0
+Version: 1.1
 Author: Maksym "Qwazar" Mezhyrytskyi
 Author URI: https://github.com/qwazar14/
 */
