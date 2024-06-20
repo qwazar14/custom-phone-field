@@ -2,7 +2,7 @@
 /*
 Plugin Name: Пользовательское поле телефона для WooCommerce
 Description: Добавляет пользовательское поле телефона с маской укр номера на страницу оформления заказа WooCommerce.
-Version: 1.2
+Version: 1.2.1
 Author: Maksym "Qwazar" Mezhyrytskyi
 Author URI: https://github.com/qwazar14/
 Plugin URI: https://github.com/qwazar14/custom-phone-field
@@ -47,7 +47,7 @@ function save_custom_phone_field($order_id) {
     if (isset($_POST['billing_phone_ua'])) {
         $phone = str_replace('-', '', sanitize_text_field($_POST['billing_phone_ua']));
         update_post_meta($order_id, '_billing_phone_ua', $phone);
-        update_post_meta($order_id, '_billing_phone', $phone);
+        update_post_meta($order_id, '_billing_phone', $phone); // Сохраняем в стандартное поле billing_phone
     }
 }
 
@@ -55,7 +55,7 @@ function save_custom_phone_field($order_id) {
 add_filter('woocommerce_admin_billing_fields', 'add_custom_phone_to_admin_order', 10, 1);
 
 function add_custom_phone_to_admin_order($fields) {
-    $fields['phone_ua'] = array(
+    $fields['phone'] = array(
         'label' => __('Телефон', 'woocommerce'),
         'show' => true
     );
@@ -67,4 +67,15 @@ add_action('woocommerce_admin_order_data_after_billing_address', 'display_custom
 
 function display_custom_phone_in_admin_order($order){
     echo '<p><strong>'.__('Телефон').':</strong> ' . get_post_meta($order->get_id(), '_billing_phone_ua', true) . '</p>';
+}
+
+// Add custom phone field to email order details
+add_filter('woocommerce_email_order_meta_fields', 'custom_phone_in_order_email', 10, 3);
+
+function custom_phone_in_order_email($fields, $sent_to_admin, $order) {
+    $fields['billing_phone'] = array(
+        'label' => __('Телефон'),
+        'value' => get_post_meta($order->get_id(), '_billing_phone_ua', true),
+    );
+    return $fields;
 }
